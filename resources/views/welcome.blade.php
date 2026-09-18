@@ -82,9 +82,26 @@
     <div class="form-card">
         <h2>Queue Registration Form</h2>
 
-        @if(session('success'))
+        @if(session('tracking_number'))
+        <div style="background-color: #d1fae5; color: #065f46; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 2px solid #34d399;">
+            <h3 style="margin: 0 0 10px 0; font-size: 18px;">Registration Successful!</h3>
+            <p style="margin: 0; font-size: 14px;">Your tracking number is:</p>
+            <div style="font-size: 36px; font-weight: 900; letter-spacing: 2px; margin-top: 5px;">{{ session('tracking_number') }}</div>
+            <p style="margin: 10px 0 0 0; font-size: 12px; color: #047857;">Please wait for your number to be called.</p>
+        </div>
+        @elseif(session('success'))
         <div class="alert-success">
             {{ session('success') }}
+        </div>
+        @endif
+
+        @if($errors->any())
+        <div style="background-color: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+            <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
         @endif
 
@@ -113,10 +130,20 @@
         </form>
     </div>
     <script>
+        function generateUUID() {
+            if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+                return crypto.randomUUID();
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
         let deviceId = localStorage.getItem('device_id');
 
         if (!deviceId) {
-            deviceId = crypto.randomUUID();
+            deviceId = generateUUID();
             localStorage.setItem('device_id', deviceId);
         }
 

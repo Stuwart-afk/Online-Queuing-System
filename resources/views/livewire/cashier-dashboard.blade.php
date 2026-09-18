@@ -2,13 +2,14 @@
 
 use Livewire\Component;
 use App\Models\QueueTicket;
+use App\Http\Controllers\QueueController;
 
 new class extends Component {
     public $tellerName = 'Window 1'; 
     public ?QueueTicket $activeTicket = null;
-    
     public $pinInput = '';
     public $isAuthenticated = false;
+    public $isOpen = false;
     
     private $correctPin = '1234';
 
@@ -17,6 +18,9 @@ new class extends Component {
         if (session()->get('cashier_authenticated') === true) {
             $this->isAuthenticated = true;
             $this->loadActiveTicket();
+            if ($this->activeTicket) {
+                $this->isOpen = true;
+            }
         }
     }
 
@@ -38,56 +42,60 @@ new class extends Component {
         session()->forget('cashier_authenticated');
         $this->isAuthenticated = false;
         $this->activeTicket = null;
+        $this->isOpen = false;
+    }
+
+    public function toggleWindow()
+    {
+        $this->isOpen = !$this->isOpen;
+        $controller = app(QueueController::class);
+        
+        if ($this->isOpen) {
+            $controller->startQueue($this->tellerName);
+        } else {
+            $controller->stopQueue($this->tellerName);
+            $this->activeTicket = null;
+        }
     }
 
     public function loadActiveTicket()
     {
-        $this->activeTicket = QueueTicket::where('status', 'active')
-            ->where('assigned_teller', $this->tellerName)
-            ->first();
+        $this->activeTicket = QueueTicket::serving()->where('assigned_teller', $this->tellerName)->first();
     }
 
     public function callNext()
     {
-        $nextTicket = QueueTicket::where('status', 'holding')
-            ->orderBy('created_at', 'asc')
-            ->first();
-
-        if ($nextTicket) {
-            $nextTicket->update([
-                'status' => 'active',
-                'assigned_teller' => $this->tellerName
-            ]);
-            $this->loadActiveTicket();
-        } else {
-            session()->flash('error', 'The waiting line is empty!');
+        if (!$this->isOpen) {
+            session()->flash('error', 'Please open your window first!');
+            return;
         }
+
+        $next = app(QueueController::class)->callNext($this->tellerName);
+        
+        if (!$next) {
+            session()->flash('error', 'The active line is empty!');
+        }
+        
+        $this->loadActiveTicket();
     }
 
     public function completeCurrent()
     {
-        if ($this->activeTicket) {
-            $this->activeTicket->update(['status' => 'completed']);
-            $this->activeTicket = null; 
-            $this->callNext(); 
-        }
+        app(QueueController::class)->completeCurrent($this->tellerName);
+        $this->loadActiveTicket();
     }
 
     public function holdCurrent()
     {
-        if ($this->activeTicket) {
-            $this->activeTicket->update(['status' => 'held']);
-            $this->activeTicket = null;
-            $this->callNext(); 
-        }
+        app(QueueController::class)->holdCurrent($this->tellerName);
+        $this->loadActiveTicket();
     }
 
     public function with()
     {
         return [
-            'waitingList' => QueueTicket::where('status', 'holding')
-                ->orderBy('created_at', 'asc')
-                ->get()
+            'activeList' => QueueTicket::active()->get(),
+            'holdingList' => QueueTicket::holding()->get()
         ];
     }
 };
@@ -122,7 +130,12 @@ new class extends Component {
         </div>
     @else
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Cashier: {{ $tellerName }}</h1>
+            <div class="flex items-center gap-4">
+                <h1 class="text-3xl font-bold text-gray-800">Cashier: {{ $tellerName }}</h1>
+                <button wire:click="toggleWindow" class="px-4 py-2 rounded-lg font-bold text-white transition shadow-sm {{ $isOpen ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}">
+                    {{ $isOpen ? 'Close Window' : 'Open Window' }}
+                </button>
+            </div>
             <button wire:click="logout" class="text-red-600 hover:text-red-800 font-semibold underline">Log Out</button>
         </div>
 
@@ -132,7 +145,7 @@ new class extends Component {
             </div>
         @endif
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div class="md:col-span-2 bg-gray-50 p-8 rounded-xl border-2 border-gray-200 shadow-sm">
                 <h2 class="text-xl mb-6 font-semibold text-gray-600 uppercase tracking-wide">Currently Serving</h2>
                 
@@ -153,26 +166,47 @@ new class extends Component {
                 @else
                     <div class="text-center py-12">
                         <p class="text-gray-500 mb-8 text-xl">No one is currently at your window.</p>
-                        <button wire:click="callNext" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition shadow-md">
-                            Call Next Student
-                        </button>
+                        @if($isOpen)
+                            <button wire:click="callNext" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold text-xl transition shadow-md">
+                                Call Next Student
+                            </button>
+                        @else
+                            <p class="text-red-500 font-semibold mt-4">Window is closed. Open it to start calling students.</p>
+                        @endif
                     </div>
                 @endif
             </div>
 
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                 <h2 class="text-lg font-bold mb-4 flex justify-between items-center border-b pb-2">
-                    Waiting Line 
-                    <span class="bg-blue-100 text-blue-800 text-sm py-1 px-3 rounded-full">{{ $waitingList->count() }}</span>
+                    Active Line
+                    <span class="bg-green-100 text-green-800 text-sm py-1 px-3 rounded-full">{{ $activeList->count() }}</span>
                 </h2>
                 <ul class="space-y-3">
-                    @forelse($waitingList as $ticket)
-                        <li class="py-3 px-4 bg-gray-50 rounded border border-gray-100 flex justify-between items-center">
+                    @forelse($activeList as $ticket)
+                        <li class="py-3 px-4 bg-green-50 rounded border border-green-100 flex flex-col">
                             <strong class="text-lg text-gray-800">{{ $ticket->tracking_number }}</strong> 
-                            <span class="text-gray-600">{{ $ticket->name }}</span>
+                            <span class="text-gray-600 text-sm">{{ $ticket->name }}</span>
                         </li>
                     @empty
-                        <li class="py-4 text-center text-gray-400 italic">Line is empty</li>
+                        <li class="py-4 text-center text-gray-400 italic">No one in physical line</li>
+                    @endforelse
+                </ul>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <h2 class="text-lg font-bold mb-4 flex justify-between items-center border-b pb-2">
+                    Holding Line
+                    <span class="bg-blue-100 text-blue-800 text-sm py-1 px-3 rounded-full">{{ $holdingList->count() }}</span>
+                </h2>
+                <ul class="space-y-3">
+                    @forelse($holdingList as $ticket)
+                        <li class="py-3 px-4 bg-gray-50 rounded border border-gray-100 flex flex-col">
+                            <strong class="text-lg text-gray-800">{{ $ticket->tracking_number }}</strong> 
+                            <span class="text-gray-600 text-sm">{{ $ticket->name }}</span>
+                        </li>
+                    @empty
+                        <li class="py-4 text-center text-gray-400 italic">Holding line is empty</li>
                     @endforelse
                 </ul>
             </div>
