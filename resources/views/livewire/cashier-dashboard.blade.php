@@ -85,10 +85,18 @@ new class extends Component {
         $this->loadActiveTicket();
     }
 
-    public function holdCurrent()
+    public function noShowCurrent()
     {
-        app(QueueController::class)->holdCurrent($this->tellerName);
+        app(QueueController::class)->noShowCurrent($this->tellerName);
         $this->loadActiveTicket();
+    }
+
+    public function endOfDay()
+    {
+        app(QueueController::class)->endOfDay();
+        $this->activeTicket = null;
+        $this->isOpen = false;
+        session()->flash('success', 'The queue has been successfully closed and reset for the day.');
     }
 
     public function with()
@@ -101,7 +109,7 @@ new class extends Component {
 };
 ?>
 
-<div class="p-8 font-sans">
+<div class="p-8 font-sans" wire:poll.2s>
     @if(!$isAuthenticated)
         <div class="max-w-md mx-auto mt-20 bg-white p-8 rounded-xl border-2 border-gray-200 shadow-sm text-center">
             <h2 class="text-2xl font-bold mb-6 text-gray-800">Cashier Login</h2>
@@ -135,6 +143,9 @@ new class extends Component {
                 <button wire:click="toggleWindow" class="px-4 py-2 rounded-lg font-bold text-white transition shadow-sm {{ $isOpen ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' }}">
                     {{ $isOpen ? 'Close Window' : 'Open Window' }}
                 </button>
+                <button wire:click="endOfDay" onclick="confirm('Are you sure you want to end the day? This will clear all active queues and mark waiting students as no-shows.') || event.stopImmediatePropagation()" class="px-4 py-2 rounded-lg font-bold text-white transition shadow-sm bg-gray-800 hover:bg-gray-900 ml-4">
+                    🛑 End Day
+                </button>
             </div>
             <button wire:click="logout" class="text-red-600 hover:text-red-800 font-semibold underline">Log Out</button>
         </div>
@@ -142,6 +153,12 @@ new class extends Component {
         @if (session()->has('error'))
             <div class="bg-red-100 text-red-700 p-4 mb-6 rounded border border-red-300 font-medium">
                 {{ session('error') }}
+            </div>
+        @endif
+        
+        @if (session()->has('success'))
+            <div class="bg-green-100 text-green-800 p-4 mb-6 rounded border border-green-300 font-medium">
+                {{ session('success') }}
             </div>
         @endif
 
@@ -157,10 +174,10 @@ new class extends Component {
                     
                     <div class="flex gap-4">
                         <button wire:click="completeCurrent" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-md">
-                            ✅ Complete Transaction
+                            ✓ Complete Transaction
                         </button>
-                        <button wire:click="holdCurrent" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-md">
-                            ⏸️ No Show (Hold)
+                        <button wire:click="noShowCurrent" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition shadow-md">
+                            ⚠️ No Show
                         </button>
                     </div>
                 @else

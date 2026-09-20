@@ -6,7 +6,7 @@ use App\Models\QueueTicket;
 
 class QueueController extends Controller
 {
-    const MAX_ACTIVE_CAPACITY = 5;
+    const MAX_ACTIVE_CAPACITY = 10;
 
     public function requestQueue(string $studentName)
     {
@@ -33,7 +33,10 @@ class QueueController extends Controller
     {
         $serving = QueueTicket::serving()->where('assigned_teller', $tellerName)->first();
         if ($serving) {
-            $serving->update(['status' => QueueTicket::STATUS_HELD]);
+            $serving->update([
+                'status' => QueueTicket::STATUS_ACTIVE,
+                'assigned_teller' => null
+            ]);
         }
     }
 
@@ -53,12 +56,22 @@ class QueueController extends Controller
         return $nextInLine;
     }
 
-    public function holdCurrent(string $tellerName)
+    public function noShowCurrent(string $tellerName)
     {
         $serving = QueueTicket::serving()->where('assigned_teller', $tellerName)->first();
         if ($serving) {
-            $serving->update(['status' => QueueTicket::STATUS_HELD]);
+            $serving->update(['status' => QueueTicket::STATUS_NOSHOW]);
         }
+    }
+
+    public function endOfDay()
+    {
+        QueueTicket::where('queue_date', today()->toDateString())
+            ->whereIn('status', [QueueTicket::STATUS_HOLDING, QueueTicket::STATUS_ACTIVE, QueueTicket::STATUS_SERVING])
+            ->update([
+                'status' => QueueTicket::STATUS_NOSHOW,
+                'assigned_teller' => null
+            ]);
     }
 
     public function completeCurrent(string $tellerName)

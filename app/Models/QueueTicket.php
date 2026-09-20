@@ -23,7 +23,7 @@ class QueueTicket extends Model
     public const STATUS_ACTIVE = 'active';
     public const STATUS_SERVING = 'serving';
     public const STATUS_COMPLETED = 'completed';
-    public const STATUS_HELD = 'held';
+    public const STATUS_NOSHOW = 'no-show';
 
     public function scopeHolding($query)
     {
