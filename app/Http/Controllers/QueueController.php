@@ -26,7 +26,7 @@ class QueueController extends Controller
 
     public function startQueue(string $tellerName)
     {
-        $this->fillActiveQueue($tellerName);
+        $this->fillActiveQueue();
     }
 
     public function stopQueue(string $tellerName)
@@ -47,7 +47,7 @@ class QueueController extends Controller
                 'assigned_teller' => $tellerName
             ]);
             
-            $this->fillActiveQueue($tellerName);
+            $this->fillActiveQueue();
         }
 
         return $nextInLine;
@@ -59,8 +59,6 @@ class QueueController extends Controller
         if ($serving) {
             $serving->update(['status' => QueueTicket::STATUS_HELD]);
         }
-        
-        return $this->callNext($tellerName);
     }
 
     public function completeCurrent(string $tellerName)
@@ -69,11 +67,9 @@ class QueueController extends Controller
         if ($serving) {
             $serving->update(['status' => QueueTicket::STATUS_COMPLETED]);
         }
-        
-        return $this->callNext($tellerName);
     }
 
-    public function fillActiveQueue(string $tellerName = null)
+    public function fillActiveQueue()
     {
         $activeCount = QueueTicket::active()->count();
 
@@ -86,7 +82,7 @@ class QueueController extends Controller
 
             $nextHolding->update([
                 'status' => QueueTicket::STATUS_ACTIVE,
-                'assigned_teller' => $tellerName
+                'assigned_teller' => null
             ]);
 
             $activeCount++;

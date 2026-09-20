@@ -27,16 +27,21 @@ class QueueTicket extends Model
 
     public function scopeHolding($query)
     {
-        return $query->where('status', self::STATUS_HOLDING)->orderBy('created_at', 'asc');
+        return $query->where('status', self::STATUS_HOLDING)
+                     ->where('queue_date', today()->toDateString())
+                     ->orderBy('created_at', 'asc');
     }
 
     public function scopeActive($query)
     {
-        return $query->where('status', self::STATUS_ACTIVE)->orderBy('created_at', 'asc');
+        return $query->where('status', self::STATUS_ACTIVE)
+                     ->where('queue_date', today()->toDateString())
+                     ->orderBy('created_at', 'asc');
     }
 
     public function scopeServing($query)
     {
-        return $query->where('status', self::STATUS_SERVING);
+        return $query->where('status', self::STATUS_SERVING)
+                     ->where('queue_date', today()->toDateString());
     }
 }

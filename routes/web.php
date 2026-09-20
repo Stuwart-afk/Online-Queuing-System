@@ -11,6 +11,7 @@ Route::get('/', function () {
 use Livewire\Volt\Volt;
 
 Volt::route('/cashier', 'cashier-dashboard');
+Volt::route('/display', 'student-display');
 
 Route::post('/submit', [UserControllers::class ,'store'])->name('submit.form');
 

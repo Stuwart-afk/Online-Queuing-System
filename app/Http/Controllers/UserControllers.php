@@ -19,6 +19,15 @@ class UserControllers extends Controller
 
         $today = now()->toDateString();
 
+        $existingTicket = QueueTicket::where('device_id', $validated['device_id'])
+            ->where('queue_date', $today)
+            ->whereIn('status', ['holding', 'active'])
+            ->first();
+
+        if ($existingTicket) {
+            return redirect()->back()->with('tracking_number', $existingTicket->tracking_number);
+        }
+
         $lastTicket = QueueTicket::where('queue_date', $today)
             ->orderByDesc('id')
             ->first();
@@ -39,8 +48,11 @@ class UserControllers extends Controller
             'platform' => $validated['platform'],
             'tracking_number' => $trackingNumber,
             'status' => 'holding',
+            'queue_date' => $today,
         ]);
 
-        return redirect()->back();
+        app(\App\Http\Controllers\QueueController::class)->fillActiveQueue();
+
+        return redirect()->back()->with('tracking_number', $trackingNumber);
     }
 }
