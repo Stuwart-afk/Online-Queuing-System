@@ -72,23 +72,22 @@
             <!-- NAVIGATION LINKS -->
             <div class="nav-links">
 
-                <a href="#" class="active">
-                    Home
-                </a>
+    <a href="{{ url('/') }}"
+       class="{{ request()->is('/') ? 'active' : '' }}">
+        Home 
+    </a>
 
-                <a href="service">
-                    Service
-                </a>
+    <a href="{{ url('/contact') }}"
+       class="{{ request()->is('contact') ? 'active' : '' }}">
+        Contact
+    </a>
 
-                <a href="Contact">
-                    Contact
-                </a>
+    <a href="{{ url('/about') }}"
+       class="{{ request()->is('about') ? 'active' : '' }}">
+        About
+    </a>
 
-                <a href="about">
-                    About
-                </a>
-
-            </div>
+</div>
 
         </nav>
 
