@@ -1,58 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Online Queuing System</title>
+@extends('layout')
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
-        }
+@section('content')
 
-        .container {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 40px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+<style>
+    .about-page {
+        min-height: 100vh;
+        padding: 120px 20px 50px;
+        background-color: #f5f5f5;
+        color: #333;
+    }
 
-        h1 {
-            text-align: center;
-            color: #1a4d8f;
-            margin-bottom: 30px;
-        }
+    .about-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        h2 {
-            color: #1a4d8f;
-            margin-top: 30px;
-        }
+    .about-container h1 {
+        text-align: center;
+        color: #1a4d8f;
+        margin-bottom: 30px;
+    }
 
-        p {
-            font-size: 17px;
-            line-height: 1.7;
-            text-align: justify;
-        }
+    .about-container h2 {
+        color: #1a4d8f;
+        margin-top: 30px;
+    }
 
-        .highlight {
-            background-color: #eef5ff;
-            padding: 20px;
-            border-left: 5px solid #1a4d8f;
-            margin-top: 25px;
-            border-radius: 5px;
-        }
-    </style>
-</head>
+    .about-container p {
+        font-size: 17px;
+        line-height: 1.7;
+        text-align: justify;
+    }
 
-<body>
+    .highlight {
+        background-color: #eef5ff;
+        padding: 20px;
+        border-left: 5px solid #1a4d8f;
+        margin-top: 25px;
+        border-radius: 5px;
+    }
+</style>
 
-    <div class="container">
+
+<div class="about-page">
+
+    <div class="about-container">
 
         <h1>About Our Online Queuing System</h1>
 
@@ -66,10 +62,10 @@
 
         <p>
             To get a tracking number, the user only needs to provide their
-            <strong>Student USM ID</strong> and the <strong>purpose of their
-            transaction</strong>. After submitting the information, they will
-            receive a tracking number and can wait for their turn without
-            staying in the cashier area.
+            <strong>Student USN ID</strong> and the
+            <strong>purpose of their transaction</strong>. After submitting
+            the information, they will receive a tracking number and can wait
+            for their turn without staying in the cashier area.
         </p>
 
         <p>
@@ -82,10 +78,10 @@
         <h2>Why We Built This System</h2>
 
         <p>
-            We built this system to help <strong>reduce long lines and waiting
-            times</strong> in the cashier area. It allows students and parents
-            to wait somewhere more comfortable instead of standing in line
-            for a long time.
+            We built this system to help
+            <strong>reduce long lines and waiting times</strong> in the
+            cashier area. It allows students and parents to wait somewhere
+            more comfortable instead of standing in line for a long time.
         </p>
 
         <p>
@@ -95,13 +91,15 @@
 
         <div class="highlight">
             <p>
-                Our goal is to provide a <strong>simple, convenient, and
-                organized way of managing queues</strong> while making the
-                cashier experience better for both users and staff.
+                Our goal is to provide a
+                <strong>simple, convenient, and organized way of managing
+                queues</strong> while making the cashier experience better
+                for both users and staff.
             </p>
         </div>
 
     </div>
 
-</body>
-</html>
+</div>
+
+@endsection
