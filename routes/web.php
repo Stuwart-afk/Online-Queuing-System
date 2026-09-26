@@ -37,7 +37,7 @@ Route::post('/verify-phone/resend', [PhoneVerificationController::class, 'resend
     ->name('verify.phone.resend');
 
 
-Route::get('/Contact', function () {
+Route::get('/contact', function () {
     return view('contact');
 });
 
