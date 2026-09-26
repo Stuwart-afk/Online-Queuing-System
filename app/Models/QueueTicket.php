@@ -45,13 +45,14 @@ class QueueTicket extends Model
 
     public const STATUS_NO_SHOW = 'no_show';
 
+    public const STATUS_CANCELLED = 'cancelled';
 
 
     // Maximum number of customers in active status.
     public const MAX_ACTIVE = 5;
 
     // Customer has 3 minutes to press "I'm Here".
-    public const ARRIVAL_MINUTES = 3;
+    public const ARRIVAL_MINUTES = 5;
 
 
     protected $casts = [
@@ -62,6 +63,24 @@ class QueueTicket extends Model
         'arrived_at' => 'datetime',
     ];
 
+    public function cancel(): bool
+    {
+        if (!in_array($this->status, [
+            self::STATUS_HOLDING,
+            self::STATUS_ACTIVE,
+            self::STATUS_HELD,
+        ])) {
+            return false;
+        }
+
+        $this->update([
+            'status' => self::STATUS_CANCELLED,
+        ]);
+
+        self::maintainActiveQueue();
+
+        return true;
+    }
 
     /*
     |--------------------------------------------------------------------------

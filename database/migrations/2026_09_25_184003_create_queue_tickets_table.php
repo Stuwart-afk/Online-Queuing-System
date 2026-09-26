@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('assigned_teller')->nullable();
             $table->date('queue_date');
             $table->uuid('access_token')->unique();
+             $table->integer('last_notified_position')->nullable();
             $table->timestamps();
         });
     }
