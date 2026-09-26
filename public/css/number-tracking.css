@@ -11,6 +11,10 @@
 html {
     scroll-behavior: smooth;
 }
+strong {
+  font-weight: 700;
+  color: #d0ff34;
+}
 
 body {
     min-height: 100vh;
@@ -506,6 +510,523 @@ body {
 
     font-weight: 700;
 }
+/* =========================================================
+   Serving Popup
+   ========================================================= */
+/* =========================================================
+   SERVING / I'M HERE POPUP
+   ========================================================= */
+
+.serving-popup-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    z-index: 9999;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   POPUP CARD
+   ========================================================= */
+
+.serving-popup {
+    width: min(92vw, 430px);
+
+    max-width: 430px;
+
+    max-height: calc(100vh - 40px);
+
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
+    padding: 32px 26px;
+
+    border-radius: 28px;
+
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.18),
+            rgba(255, 255, 255, 0.08)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+    color: #ffffff;
+
+    animation: servingPopupIn 0.3s ease-out;
+}
+
+
+/* =========================================================
+   POPUP ANIMATION
+   ========================================================= */
+
+@keyframes servingPopupIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+}
+
+
+/* =========================================================
+   POPUP ICON
+   ========================================================= */
+
+.serving-popup-icon {
+
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.15);
+
+    font-size: 34px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.2);
+
+}
+
+
+/* =========================================================
+   POPUP TITLE
+   ========================================================= */
+
+.serving-popup-title {
+
+    width: 100%;
+
+    margin-bottom: 12px;
+
+    font-family: 'Outfit', sans-serif;
+
+    font-size: clamp(24px, 6vw, 34px);
+    
+
+    font-weight: 700;
+
+    line-height: 1.1;
+
+    text-align: center;
+
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   POPUP DESCRIPTION
+   ========================================================= */
+
+.serving-popup-text {
+
+    width: 100%;
+
+    max-width: 340px;
+
+    margin: 0 auto 22px;
+    
+
+    font-family: 'Inter', sans-serif;
+
+    font-size: clamp(14px, 3.8vw, 17px);
+
+    line-height: 1.6;
+
+    text-align: center;
+
+    color: rgba(255, 255, 255, 0.9);
+}
+
+
+.serving-popup-text strong {
+
+    color: #ffffff;
+
+    font-weight: 700;
+
+}
+
+
+/* =========================================================
+   COUNTDOWN
+   ========================================================= */
+
+.serving-countdown {
+
+    width: 100%;
+
+    margin: 4px 0 5px;
+
+    font-family: 'Outfit', sans-serif;
+
+    font-size: clamp(42px, 12vw, 64px);
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    text-align: center;
+
+    letter-spacing: 2px;
+
+    color: #ffffff;
+
+    text-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.25);
+}
+
+
+/* =========================================================
+   COUNTDOWN LABEL
+   ========================================================= */
+
+.serving-countdown-label {
+
+    width: 100%;
+
+    margin-bottom: 22px;
+
+    font-family: 'Inter', sans-serif;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* =========================================================
+   I'M HERE BUTTON
+   ========================================================= */
+
+.serving-button {
+
+    width: 100%;
+
+    max-width: 320px;
+
+    min-height: 54px;
+
+    margin: 0 auto;
+
+    padding: 14px 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+
+    border-radius: 16px;
+
+    font-family: 'Inter', sans-serif;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    text-align: center;
+
+    cursor: pointer;
+
+    color: #ffffff;
+
+    background: rgba(255, 255, 255, 0.18);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.2);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.serving-button:hover {
+
+    background: rgba(255, 255, 255, 0.28);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+
+.serving-button:active {
+
+    transform: translateY(0);
+
+}
+
+
+.serving-button:disabled {
+
+    opacity: 0.5;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+}
+
+
+/* =========================================================
+   COUNTDOWN MESSAGE
+   ========================================================= */
+
+.serving-countdown-message {
+
+    width: 100%;
+
+    max-width: 320px;
+
+    margin: 14px auto 0;
+
+    font-family: 'Inter', sans-serif;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    text-align: center;
+
+    color: rgba(255, 255, 255, 0.85);
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .serving-popup-overlay {
+
+        padding: 14px;
+
+    }
+
+
+    .serving-popup {
+
+        width: 100%;
+
+        max-width: none;
+
+        max-height: calc(100vh - 28px);
+
+        padding: 26px 20px;
+
+        border-radius: 24px;
+
+    }
+
+
+    .serving-popup-icon {
+
+        width: 62px;
+        height: 62px;
+
+        margin-bottom: 14px;
+
+        font-size: 28px;
+
+    }
+
+
+    .serving-popup-title {
+
+        margin-bottom: 10px;
+
+    }
+
+
+    .serving-popup-text {
+
+        margin-bottom: 18px;
+
+    }
+
+
+    .serving-countdown {
+
+        margin-top: 2px;
+
+    }
+
+
+    .serving-countdown-label {
+
+        margin-bottom: 18px;
+
+        font-size: 10px;
+
+    }
+
+
+    .serving-button {
+
+        width: 100%;
+
+        min-height: 52px;
+
+        font-size: 15px;
+
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .serving-popup {
+
+        padding: 22px 16px;
+
+        border-radius: 20px;
+
+    }
+
+
+    .serving-popup-icon {
+
+        width: 54px;
+        height: 54px;
+
+        font-size: 24px;
+
+    }
+
+
+    .serving-popup-text {
+
+        font-size: 13px;
+
+    }
+
+
+    .serving-countdown {
+
+        font-size: 42px;
+
+    }
+
+
+    .serving-button {
+
+        min-height: 48px;
+
+        padding: 12px 18px;
+
+        font-size: 14px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SHORT SCREENS
+   ========================================================= */
+
+@media (max-height: 650px) {
+
+    .serving-popup {
+
+        padding-top: 18px;
+        padding-bottom: 18px;
+
+    }
+
+
+    .serving-popup-icon {
+
+        width: 52px;
+        height: 52px;
+
+        margin-bottom: 10px;
+
+        font-size: 24px;
+
+    }
+
+
+    .serving-popup-text {
+
+        margin-bottom: 12px;
+
+    }
+
+
+    .serving-countdown-label {
+
+        margin-bottom: 12px;
+
+    }
+
+}
+
 
 
 /* =========================================================
@@ -518,7 +1039,7 @@ body {
     width: 390px;
 
     left: 50%;
-    bottom: -30px;
+    bottom: -40px;
 
     transform: translateX(-50%);
 
